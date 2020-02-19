@@ -79,6 +79,8 @@ cols = ["dur", "proto", "service", "state", "spkts", "dpkts", "sbytes", "dbytes"
         "ct_dst_src_ltm", "is_ftp_login", "ct_ftp_cmd", "ct_flw_http_mthd",
         "ct_src_ltm", "ct_srv_dst", "is_sm_ips_ports"]
 
+tempObj = CategoricalEncoder()
+
 
 # TODO 1: Identify variables' types
 def load_data(path, train=False):
@@ -96,8 +98,8 @@ def load_data(path, train=False):
         # Caegorical varaiables
         elif key in ["proto", "service", "state", "trans_depth", "is_ftp_login", "ct_ftp_cmd", "ct_flw_http_mthd",
                      "is_sm_ips_ports"]:
-            tempObj=CategoricalEncoder()
-
+            inp[key] = tempObj.fit_transform(df[key])
+            continue
 
         elif "attack_cat" in key:
             labels = df[key].map(label_to_int).values
@@ -228,6 +230,8 @@ def find_threshold(normal_scores, anormal_scores):
 
 
 train_data = load_data("train.csv", train=True)
+print(train_data[1])
+'''
 model, losses = create_training_model([k for k in train_data[0]])
 model = train_model(model, losses, train_data)
 
@@ -240,3 +244,4 @@ anormal_ids = np.where(labels == 1)
 threshold = find_threshold(scores[normal_ids], scores[anormal_ids])
 
 # TODO 6: analyze "unknown.csv"
+'''
